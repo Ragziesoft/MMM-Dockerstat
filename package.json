@@ -1,0 +1,11 @@
+{
+  "name": "mmm-dockerstat",
+  "version": "1.0.0",
+  "description": "Module to retrieve the status of docker containers running on another machine in the local network",
+  "main": "MMM-Dockerstat.js",
+  "scripts": {
+    "test": "testdocker"
+  },
+  "author": "Ragziesoft",
+  "license": "MIT"
+}
