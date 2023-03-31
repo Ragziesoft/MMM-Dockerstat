@@ -10,7 +10,7 @@ The code appears to run and displays a rotating icon to indicate the status.Howe
         header: 'Docker Status',
         position: 'top_right',
         config: {
-        host: '192.168.1.200', // IP address of the second Pi running Docker
+        host: '', // IP address of the second Pi running Docker
         interval: 600000, // check interval in milliseconds (30 seconds in this example)
         user:'pi', //ssh user id
         password:' ', // ssh password
