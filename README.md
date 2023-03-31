@@ -12,8 +12,8 @@ The code appears to run and displays a rotating icon to indicate the status.Howe
         config: {
         host: '192.168.1.200', // IP address of the second Pi running Docker
         interval: 600000, // check interval in milliseconds (30 seconds in this example)
-        user:'pi',
-        password:'Ragspi@12',
+        user:'pi', //ssh user id
+        password:' ', // ssh password
         offlineIcon: 'fa-times-circle', // Font Awesome icon for offline status
         onlineIcon: 'fa-check-circle' // Font Awesome icon for online status
     }
