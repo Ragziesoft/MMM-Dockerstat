@@ -1,6 +1,6 @@
 {
   "name": "mmm-dockerstat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module to check Docker container status running on a second Pi machine in same network, and display on first pi.",
   "main": "MMM-Dockerstat.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "ping": "^0.4.4",
-    "simple-ssh": "^1.0.0"
+    "simple-ssh": "^1.0.0",
+    "winston": "^3.8.2"
   }
 }

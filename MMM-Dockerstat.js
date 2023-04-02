@@ -6,39 +6,33 @@ Module.register("MMM-Dockerstat", {
     interval: 5000 // Check interval in milliseconds
   },
 
-  // Define required scripts.
-  getScripts: function() {
-    return ["fontawesome.js"];
-  },
-
   // Define required styles.
-  getStyles: function() {
-    return ["MMM-Dockerstat.css"];
+  getStyles: function () {
+    return ["MMM-Dockerstat.css", "font-awesome.css"];
   },
 
   // Define start sequence.
-  start: function() {
-    this.status = null;
+  start: function () {
     this.sendSocketNotification("START_CHECK", this.config);
   },
 
   // Handle socket notifications.
-  socketNotificationReceived: function(notification, payload) {
+  socketNotificationReceived: function (notification, payload) {
     if (notification === "STATUS_UPDATE") {
       this.status = payload;
-      this.updateDom();
+      this.draw(this.status);
     }
   },
 
-  // Override dom generator.
-  getDom: function() {
-    var wrapper = document.createElement("div");
+  draw: function (status) {
+    var statusInfo = status;
+    wrapper = this.wrapper
     var icon = document.createElement("span");
     icon.className = "fas fa-3x";
-    if (this.status === "Online") {
+    if (statusInfo.status === "Online") {
       icon.classList.add("fa-check-circle");
       icon.style.color = "green";
-    } else if (this.status === "Offline") {
+    } else if (statusInfo.status === "Offline") {
       icon.classList.add("fa-times-circle");
       icon.style.color = "red";
     } else {
@@ -46,7 +40,15 @@ Module.register("MMM-Dockerstat", {
       icon.classList.add("fa-spin");
     }
     wrapper.appendChild(icon);
-    return wrapper;
+    Log.log("New wrapper", wrapper)
+    return wrapper();
+  },
+
+  // Override dom generator.
+  getDom: function () {
+    var wrapper = document.createElement("div");
+    this.wrapper = wrapper;
+    return this.wrapper;
   }
 
 });
