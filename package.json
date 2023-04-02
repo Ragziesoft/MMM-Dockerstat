@@ -1,11 +1,16 @@
 {
   "name": "mmm-dockerstat",
   "version": "1.0.0",
-  "description": "Module to retrieve the status of docker containers running on another machine in the local network",
+  "description": "Module to check Docker container status running on a second Pi machine in same network, and display on first pi.",
   "main": "MMM-Dockerstat.js",
   "scripts": {
-    "test": "testdocker"
+    "test": "dockerstat"
   },
   "author": "Ragziesoft",
-  "license": "MIT"
+  "url": "https://github.com/Ragziesoft/MMM-Dockerstat",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ping": "^0.4.4",
+    "simple-ssh": "^1.0.0"
+  }
 }

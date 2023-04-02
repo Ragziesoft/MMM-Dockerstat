@@ -2,7 +2,7 @@ Module.register("MMM-Dockerstat", {
 
   // Default module config
   defaults: {
-    host: "192.168.1.2", // IP address of the second Pi machine
+    host: "192.168.1.200", // IP address of the second Pi machine
     interval: 5000 // Check interval in milliseconds
   },
 

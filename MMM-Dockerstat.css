@@ -37,3 +37,11 @@
     transform: rotate(359deg);
   }
 }
+.MMM-Dockerstat .fa-wifi {
+  color: green;
+}
+
+.MMM-Dockerstat .fa-wifi-off {
+  color: red;
+}
+
