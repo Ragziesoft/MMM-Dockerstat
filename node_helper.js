@@ -6,7 +6,6 @@ module.exports = NodeHelper.create({
   start() {
     this.timer = null;
     this.status = null;
-    this.container = payload.container;
     this.onlineIcon = 'fa-circle';
     this.offlineIcon = 'fa-circle-o';
   },
@@ -17,9 +16,9 @@ module.exports = NodeHelper.create({
 
   startCheck(payload) {
     this.stopCheck();
-    this.checkStatus();
+    this.checkStatus(payload);
     this.timer = setInterval(() => {
-      this.checkStatus();
+      this.checkStatus(payload);
     }, payload.interval);
   },
 
@@ -51,7 +50,7 @@ module.exports = NodeHelper.create({
     });
 
     ssh
-      .exec(`sudo docker ps -f name=${this.container} --format "{{.Names}} {{.Status}}"`)
+      .exec(`sudo docker ps -f name=${payload.container} --format "{{.Names}} {{.Status}}"`)
       .on('error', (err) => {
         console.error(`Error: ${err}`);
         this.status = 'Error';
@@ -61,11 +60,11 @@ module.exports = NodeHelper.create({
         if (data.trim() !== '') {
           this.status = 'Online';
           this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.onlineIcon });
-          console.info(`Container ${this.container} on host ${payload.host} is online.`);
+          console.info(`Container ${payload.container} on host ${payload.host} is online.`);
         } else {
           this.status = 'Offline';
           this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.offlineIcon });
-          console.info(`Container ${this.container} on host ${payload.host} is offline.`);
+          console.info(`Container ${payload.container} on host ${payload.host} is offline.`);
         }
       })
       .on('end', () => {
