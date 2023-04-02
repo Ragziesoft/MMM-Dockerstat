@@ -1,43 +1,26 @@
 const ping = require('ping');
 const SSH = require('simple-ssh');
 const NodeHelper = require('node_helper');
-const Fontawesome = require('fontawesome');
-const Logger = require('./logger.js');
-const axios = require('axios');
 
 module.exports = NodeHelper.create({
   start() {
     this.timer = null;
     this.status = null;
-    this.host = this.config.host;
-    this.interval = this.config.interval || 3000;
-    this.container = this.config.container;
-    this.onlineIcon = this.config.onlineIcon || 'fa-circle';
-    this.offlineIcon = this.config.offlineIcon || 'fa-circle-o';
-    this.logger = Logger(this.name);
+    this.container = payload.container;
+    this.onlineIcon = 'fa-circle';
+    this.offlineIcon = 'fa-circle-o';
   },
 
   socketNotificationReceived(notification, payload) {
-    if (notification === 'START_CHECK') {
-      if (payload.host) {
-        this.host = payload.host;
-      }
-      if (payload.interval) {
-        this.interval = payload.interval;
-      }
-      if (payload.container) {
-        this.container = payload.container;
-      }
-      this.startCheck();
-    }
+      this.startCheck(payload);
   },
 
-  startCheck() {
+  startCheck(payload) {
     this.stopCheck();
     this.checkStatus();
     this.timer = setInterval(() => {
       this.checkStatus();
-    }, this.interval);
+    }, payload.interval);
   },
 
   stopCheck() {
@@ -47,31 +30,30 @@ module.exports = NodeHelper.create({
     }
   },
 
-  checkStatus() {
-    console.log('checkStatus called with host:', this.host);
-    ping.sys.probe(this.host, (isAlive) => {
+  checkStatus(payload) {
+    console.log('checkStatus called with host:', payload.host);
+    ping.sys.probe(payload.host, (isAlive) => {
       if (isAlive) {
-        this.checkDockerStatus();
+        this.checkDockerStatus(payload);
       } else {
         this.status = 'Offline';
         this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.offlineIcon });
-        console.log(`Host ${this.host} is offline.`);
-        this.logger.info(`Host ${this.host} is offline.`);
+        console.log(`Host ${payload.host} is offline.`);
       }
     });
   },
 
-  checkDockerStatus() {
+  checkDockerStatus(payload) {
     const ssh = new SSH({
-      host: this.host,
-      user: this.config.user,
-      pass: this.config.password,
+      host: payload.host,
+      user: payload.user,
+      pass: payload.password,
     });
 
     ssh
       .exec(`sudo docker ps -f name=${this.container} --format "{{.Names}} {{.Status}}"`)
       .on('error', (err) => {
-        this.logger.error(`Error: ${err}`);
+        console.error(`Error: ${err}`);
         this.status = 'Error';
         this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.offlineIcon });
       })
@@ -79,11 +61,11 @@ module.exports = NodeHelper.create({
         if (data.trim() !== '') {
           this.status = 'Online';
           this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.onlineIcon });
-          this.logger.info(`Container ${this.container} on host ${this.host} is online.`);
+          console.info(`Container ${this.container} on host ${payload.host} is online.`);
         } else {
           this.status = 'Offline';
           this.sendSocketNotification('STATUS_UPDATE', { status: this.status, icon: this.offlineIcon });
-          this.logger.info(`Container ${this.container} on host ${this.host} is offline.`);
+          console.info(`Container ${this.container} on host ${payload.host} is offline.`);
         }
       })
       .on('end', () => {
